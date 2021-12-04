@@ -1,0 +1,36 @@
+version: '3.3'
+
+services:
+  mongo:
+    build: db
+    container_name: mongo-database
+    environment:
+      - MONGO_INITDB_DATABASE=sensorDatabase      
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    volumes:      
+      - ./db/data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - mongonet     
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=pass
+      - ME_CONFIG_BASICAUTH_USERNAME=rootexpress
+      - ME_CONFIG_BASICAUTH_PASSWORD=passexpress
+    depends_on:
+      -  mongo
+    ports:
+      - "8081:8081"
+    networks:
+      - mongonet      
+    restart: unless-stopped      
+networks:
+  mongonet:        
